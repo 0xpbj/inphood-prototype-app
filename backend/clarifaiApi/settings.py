@@ -72,9 +72,12 @@ TEMPLATES = [
     },
 ]
 
-CLARIFAI_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-CLARIFAI_CLIENT_ID = os.environ.get('CLIENT_ID')
-USDA_API_KEY = os.environ.get("USDA_KEY")
+#CLARIFAI_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+CLARIFAI_CLIENT_SECRET = 'hpiWT3FdeICW3knKDA7fOQkW7nOZAjJXczTrwRmi'
+#CLARIFAI_CLIENT_ID = os.environ.get('CLIENT_ID')
+CLARIFAI_CLIENT_ID = '8rt8kNOkHRqO82N_hmQ89udRG-4HCGGOMpPx8sP3'
+#USDA_API_KEY = os.environ.get("USDA_KEY")
+USDA_API_KEY = 'OvRmcddEPvUAYsQkLk0pCGyeWfZmZKcEtqMX1Cxj'
 
 WSGI_APPLICATION = 'clarifaiApi.wsgi.application'
 
