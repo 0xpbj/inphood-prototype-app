@@ -1,0 +1,3 @@
+<errors>
+  <error status='400' parameter='XMLParseException' message='Bad request: Cannot get property &apos;max&apos; on null object' />
+</errors>

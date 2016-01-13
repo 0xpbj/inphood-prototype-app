@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
-import requests
-import json
-import os
-import io
+
+import requests, json, os, io
 import xml.etree.ElementTree as ET
 
 # Create your views here.
@@ -17,14 +15,14 @@ def save_foodVision(request):
     if form.is_valid():
       payload = {"grant_type":"client_credentials", "client_id":settings.CLARIFAI_CLIENT_ID, "client_secret":settings.CLARIFAI_CLIENT_SECRET}
       t = requests.post('https://api.clarifai.com/v1/token/', data=payload)
-      print(t.json())
+      #print(t.json())
       url = form.cleaned_data['url']
       headers = {'Authorization':'Bearer {}'.format(t.json()['access_token'])}
       r = requests.get('https://api.clarifai.com/v1/tag/?url=' + url, headers=headers)
       guesses = set(r.json()['results'][0]['result']['tag']['classes'])
-      print(guesses)
+      #print(guesses)
       probs = r.json()['results'][0]['result']['tag']['probs']
-      print(probs)
+      #print(probs)
       fruits = []
       fruitsFile = os.path.join(settings.BASE_DIR, 'fruits.txt')
       fruits = [line.rstrip('\n') for line in open(fruitsFile)]
@@ -37,6 +35,7 @@ def save_foodVision(request):
       #print (vegetablesFound)
       fruitIds = []
       vegetableIds = []
+      outputFile = open('output', 'w')
       for x in fruitsFound:
         x += ", raw"
         usda_headers = {"Content-Type":"application/json"}
@@ -55,16 +54,20 @@ def save_foodVision(request):
         vegetableIds.append(fr.json()['list']['item'][0]['ndbno'])
       
       for x in fruitIds:
-        usda_headers = {"Content-Type":"application/json"}
+        usda_headers = {"Content-Type":"application/xml"}
         usda_data = {"ndbno":x}
         fr = requests.get('http://api.nal.usda.gov/ndb/reports/?api_key=' + settings.USDA_API_KEY, usda_data, headers=usda_headers)
         #print(fr.json())
+        tree = ET.fromstring(fr.content)
+        print(ET.tostring(tree, pretty_print=True))
       
       for x in vegetableIds:
-        usda_headers = {"Content-Type":"application/json"}
+        usda_headers = {"Content-Type":"application/xml"}
         usda_data = {"ndbno":x}
         fr = requests.get('http://api.nal.usda.gov/ndb/reports/?api_key=' + settings.USDA_API_KEY, usda_data, headers=usda_headers)
         #print(fr.json())
+        tree = ET.fromstring(fr.content)
+        print(ET.tostring(tree, pretty_print=True))
 
   else:
     form = SubmitFoodVision()
